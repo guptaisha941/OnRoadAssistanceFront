@@ -6,7 +6,7 @@ import Icon from "../component/Icon";
 // import { Navigate } from 'react-router-dom';
 
 
-import React, { Component }  from 'react';
+import React  from 'react';
 import { useState } from 'react';
 // import React, { Component } from 'react';
 import axios from 'axios';
@@ -52,6 +52,7 @@ function SignUp() {
   };
 
   // function handleLogin() {
+  //   // <Redirect to = "/login"/>
   //   Navigate("/login");
   // }
   
@@ -162,8 +163,8 @@ const IconsContainer = styled.div`
   width: 80%;
 `;
 
-const ForgotPassword = styled.h4`
-  cursor: pointer;
-`;
+// const ForgotPassword = styled.h4`
+//   cursor: pointer;
+// `;
 export default SignUp;
 
