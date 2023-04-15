@@ -1,0 +1,33 @@
+.order-confirmation-container {
+    margin: 50px auto;
+    max-width: 600px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .order-confirmation-container h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .order-details {
+    margin-bottom: 20px;
+  }
+  
+  .order-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .order-item span:first-child {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .confirmation-message {
+    font-size: 18px;
+    font-style: italic;
+  }
+  

@@ -1,21 +1,44 @@
+
+
+
 import styled from "styled-components";
 import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 import Input from "../component/Input";
 import Button from "../component/Button";
 import Icon from "../component/Icon";
 // import { Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import '../Signup.css';
+// import { useHistory } from "react-router-dom";
 
 
 import React  from 'react';
-import { useState } from 'react';
+import { useState, useEffect  } from 'react';
 // import React, { Component } from 'react';
 import axios from 'axios';
 // import { Input } from 'antd';
 
 
 function SignUp() {
+
+  // const history = useHistory();
+
   
   // const [name, setName] = useState('');
+  const [click, setClick] = useState(false);
+  const [button, setButton] = useState(true);
+  const closeMobileMenu = () => setClick(false);
+  const showButton = () => {
+    if (window.innerWidth <= 960) {
+      setButton(false);
+    } else {
+      setButton(true);
+    }
+  };
+  useEffect(() => {
+    showButton();
+  }, []);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -29,60 +52,102 @@ function SignUp() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // alert(event)
   
     if (!password || !email) {
-      alert('Please enter your name and email.');
+      alert('Please enter your email and password.');
       return;
     }
-
-    const formData = {  email, password };
-
-    console.log(formData);
-
-
+  
     try {
-      const response = await axios.post('http://localhost:5000/users', formData);
-      alert('Signup successful!');
-      console.log(response.data);
+      const response = await axios.get('http://localhost:5000/customers');
+      const customers = response.data;
+  
+      const matchedCustomer = customers.find((customer) => {
+        return customer.email === email && customer.password === password;
+      });
+  
+      if (matchedCustomer) {
+        alert('Admin Login successful!');
+        window.location.href = "/";
+        // history.push("/map");
+        // Code to redirect to dashboard page or perform any other action after successful login
+      } else {
+        alert('Invalid credentials. Please try again.');
+      }
     } catch (error) {
       console.error(error);
-      alert('Signup failed.');
+      alert('Login failed.');
     }
   };
+  
 
   // function handleLogin() {
   //   // <Redirect to = "/login"/>
   //   Navigate("/login");
   // }
   
+  window.addEventListener('resize', showButton);
   const FacebookBackground =
     "linear-gradient(to right, #0546A0 0%, #0546A0 40%, #663FB6 100%)";
   const InstagramBackground =
     "linear-gradient(to right, #A12AC4 0%, #ED586C 40%, #F0A853 100%)";
   const TwitterBackground =
     "linear-gradient(to right, #56C1E1 0%, #35A9CE 50%)";
-    
-  return(
-    <div className="signup" >
-      <form onSubmit={handleSubmit}>
+  return<div className="signup">
    <MainContainer>
-    <WelcomeText>Sign-Up</WelcomeText>
+    <WelcomeText>Log In</WelcomeText> 
     <InputContainer>
-
-        {/* <Input type="text" placeholder="Email" /> */}
-        {/* <Input type="password" placeholder="Password" /> */}
-        <Input type="email" placeholder="Email"  value={email} onChange={handleEmailChange} required />
-        <Input type="text" placeholder="Password"  value={password} onChange={handlePasswordChange} required />
+        <Input type="text" placeholder="Email" value={email} onChange={handleEmailChange}/>
+        <Input type="password" placeholder="Password" value={password} onChange={handlePasswordChange}/>
       </InputContainer>
-      <ButtonContainer>
-      <Button type="submit" content="Sign Up" onClick={handleSubmit}/>
-        {/* <Button content="Sign Up" /> */}
-      </ButtonContainer>
-      
-      {/* <LoginWith>already have an Account?</LoginWith> */}
-      
-      {/* <Button type="button" content="Log In" onClick={handleLogin} /> */}
+      <div className='button-container'>
+        <ul>
+        <Link
+                to='booking'
+                className='signin'
+                onClick={handleSubmit}
+              >
+                Login
+              </Link>
+        </ul>
+        <div style={{ height: "1em" }} />
+      </div>
+      <Sent>Don't have an account? Signup as</Sent>
+      {/* <div class="text-center small" >Don't have an account? Signup as</div> */}
+
+      {/* <div class="text-center small">Don't have an account? Signup as</div> */}
+
+      <ul>
+              <Link
+                to='/customer-sign-up'
+                className='log'
+                onClick={closeMobileMenu}
+                style={{color: 'white'}}
+              >
+                User
+              </Link>
+              </ul>
+
+      <ul>
+              <Link
+                to='/login'
+                className='log'
+                onClick={closeMobileMenu}
+                style={{color: 'white'}}
+              >
+               Admin
+              </Link>
+              </ul>
+              <ul>
+              <Link
+                to='/adminLogin'
+                className='log'
+                onClick={closeMobileMenu}
+                style={{color: 'yellow'}}
+              >
+               LogIn as ADMIN
+              </Link>
+              </ul>
       <HorizontalRule />
       <LoginWith>OR LOGIN WITH</LoginWith>
       <IconsContainer>
@@ -98,8 +163,7 @@ function SignUp() {
       </IconsContainer>
       {/* <ForgotPassword>Forgot Password ?</ForgotPassword> */}
   </MainContainer>
-  </form>
-  </div >);
+  </div >;
   
 
 }
@@ -110,7 +174,7 @@ display: flex;
   flex-direction: column;
   height: 80vh;
   width: 30vw;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.5);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   backdrop-filter: blur(8.5px);
   -webkit-backdrop-filter: blur(8.5px);
@@ -145,6 +209,10 @@ const LoginWith = styled.h5`
   cursor: pointer;
 `;
 
+const Sent = styled.h6`
+  cursor: pointer;
+`;
+
 const HorizontalRule = styled.hr`
   width: 90%;
   height: 0.3rem;
@@ -163,8 +231,9 @@ const IconsContainer = styled.div`
   width: 80%;
 `;
 
-// const ForgotPassword = styled.h4`
-//   cursor: pointer;
-// `;
+const ForgotPassword = styled.h4`
+  cursor: pointer;
+`;
+
 export default SignUp;
 

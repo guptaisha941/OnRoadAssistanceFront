@@ -1,0 +1,37 @@
+.nameBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* display:-moz-grid; */
+    width: 100%;
+    height: 30px;
+    background-color: white;
+    margin-bottom: 10px;
+    border-radius: 2px;
+    line-height: 30px;
+    padding: 0 20px;
+    cursor: pointer;
+  }
+
+
+  .location {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .location-name {
+    font-weight: bold;
+    color: #0077cc;
+    text-decoration: none;
+  }
+
+  .location-name:hover {
+    text-decoration: underline;
+  }
+
+  .location-distance {
+    margin-left: 10px;
+    color: #999999;
+  }

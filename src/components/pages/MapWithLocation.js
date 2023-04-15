@@ -1,91 +1,7 @@
-// import React, { useEffect, useState } from "react";
-// import Map from "ol/Map";
-// import View from "ol/View";
-// import TileLayer from "ol/layer/Tile";
-// import OSM from "ol/source/OSM";
-// import Feature from "ol/Feature";
-// import Point from "ol/geom/Point";
-// import { fromLonLat } from "ol/proj";
-// import VectorLayer from "ol/layer/Vector";
-// import VectorSource from "ol/source/Vector";
-// // import { Icon } from 'ol/style';
-// import { Icon, Style } from 'ol/style';  // Import Style and Icon from ol/style
-
-// const MapWithLocation = () => {
-//   const [map, setMap] = useState(null);
-  
-
-//   useEffect(() => {
-//     const initialMap = new Map({
-//       target: "map-container",
-//       layers: [
-//         new TileLayer({
-//           source: new OSM(),
-//         }),
-//       ],
-//       view: new View({
-//         center: fromLonLat([0, 0]),
-//         zoom: 2,
-//       }),
-//     });
-//     setMap(initialMap);
-//   }, []);
-
-//   useEffect(() => {
-//     if (map) {
-//       navigator.geolocation.getCurrentPosition(
-//         (position) => {
-//           const longitude = position.coords.longitude;
-//           const latitude = position.coords.latitude;
-
-//           // Create a marker for your location
-//           const marker = new Feature({
-//             geometry: new Point(fromLonLat([longitude, latitude])),
-//           });
-
-//           // Create a new style for the marker using IconStyle
-//           const iconStyle = new Style({
-//             image: new Icon({
-//               src: "https://openlayers.org/en/latest/examples/data/icon.png",
-//             }),
-//           });
-
-//           // Create a vector source and add the marker feature to it
-//           const vectorSource = new VectorSource({
-//             features: [marker],
-//           });
-//           marker.setStyle(iconStyle);
-
-//           // Add the vector layer to the map
-//           const vectorLayer = new VectorLayer({
-//             source: vectorSource,
-//           });
-//           map.addLayer(vectorLayer);
-
-//           // Set the view to your location
-//           map.getView().setCenter(fromLonLat([longitude, latitude]));
-//           map.getView().setZoom(15);
-//         },
-//         (error) => {
-//           console.error(error);
-//         }
-//       );
-//     }
-//   }, [map]);
-
-
-//   return <div id="map-container" style={{ height: "500px" }}></div>;
-// };
-
-// export default MapWithLocation;
-
-// *********************************OPEN LAYERS CODE********************************************************
-
-
-
 import React, { Component } from 'react';
 import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
 import axios from 'axios';
+import './map.css';
 
 class MapWithLocation extends Component {
   constructor(props) {
@@ -94,36 +10,12 @@ class MapWithLocation extends Component {
       lat: null,
       lng: null,
       locations:[],
-      hospitals: [
-        // {
-        //   name: 'Malot Hospital',
-        //   lat: 26.8436,
-        //   lng: 75.6551,
-        // },
-        // {
-        //   name: 'Garhwal Family',
-        //   lat: 26.8505,
-        //   lng: 75.6508,
-        // },
-        // {
-        //   name: 'Rawal Hospital',
-        //   lat: 26.871816910738366,
-        //   lng: 75.70065283851683,
-        // },
-      ],
-      garages: [
-        // {
-        //   name: 'Audi Jaipur',
-        //   lat: 26.917302544974202,
-        //   lng: 75.80350139710916,
-        // },
-        // {
-        //   name: 'Haighway Automobiles',
-        //   lat: 26.85303633764573,
-        //   lng: 75.64782261245408,
-        // },
-      ],
+      hospitals: [],
+      garages: [],
+      query: '',
+      filteredLocations: [],
     };
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   componentDidMount() {
@@ -135,97 +27,168 @@ class MapWithLocation extends Component {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           });
-        }
-      },
-      () => {
-        console.log('Error getting current position');
-      }
-    );
+          const { lat, lng } = position.coords;}},
 
-    axios.get('http://localhost:5000/api/locations')
+      () => {console.log('Error getting current position');});
+  
+    axios.get('http://localhost:5000/api/locations/hospitals')
       .then(response => {
         if (this._isMounted){
-          this.setState({
-            locations: response.data
+          const locations = response.data.map((location) => {
+            const distance = this.calculateDistance(
+              this.state.lat,
+              this.state.lng,
+              location.latitude,
+              location.longitude
+            );
+            return { ...location, distance };
           });
-        }
-      })
+          this.setState({
+            locations,
+            filteredLocations: locations,});}})
       .catch(error => {
-        console.log(error);
-      });
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
+        console.log(error);});
   }
   
+  componentWillUnmount() {
+    this._isMounted = false;}
+
+  handleSearch(event) {
+    const query = event.target.value;
+    const { locations } = this.state;
+    const filteredLocations = locations.filter((location) =>
+      location.name.toLowerCase().includes(query.toLowerCase())
+    );
+    this.setState({
+      query: query,
+      filteredLocations: filteredLocations,
+    });
+  }
+
+  calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the earth in km
+    const dLat = ((lat2 - lat1) * Math.PI) / 180; // deg2rad below
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      0.5 -
+      Math.cos(dLat) / 2 +
+      (Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        (1 - Math.cos(dLon))) /
+        2;
+
+    const distance = R * 2 * Math.asin(Math.sqrt(a)); // Distance in km
+    return distance.toFixed(1); // Round to 1 decimal place
+  };
 
   render() {
     const { google } = this.props;
-    const { lat, lng, locations } = this.state;
-
+    const { lat, lng, filteredLocations, hospitals, garages, query, locations } = this.state;
+  
     if (!lat || !lng) {
       return <div>Loading...</div>;
     }
-
+  
     const mapStyles = {
-      width: '100%',
-      height: '500px',
+      width: '65%',
+      height: '90%',
+      position: 'fixed',
+      right: 0,
+      top: 0,
+      // margin: '0 20px 0 0', // added margin
+      border: '1px solid #ccc', // add border
+      borderRadius: '5px', // add border radius
     };
-
+  
     const mapOptions = {
       center: { lat, lng },
       zoom: 16,
     };
+  
+    const searchStyles = {
+      width: '50%',
+      height: '100%',
+      padding: '10px',
+      boxSizing: 'border-box',
+      margin: '0 0 0 20px', // added margin
+    };
+  
+    const nearbyPlacesStyles = {
+      width: '50%',
+      height: '100%',
+      padding: '10px',
+      boxSizing: 'border-box',
+      overflow: 'auto',
+    };
+  
+    const containerStyles = {
+      display: 'flex',
+      height: '100vh',
+    };
 
 
+    const handleLocationClick = (location) => {
+      window.location.href = '/order';
+    }
+
+    const filteredNames = filteredLocations.map(location => location.name);
+    const allNames = locations.map(location => location.name);
+    const namesToDisplay = query ? filteredNames : allNames;
+
+    const locationToDisplay = query ? filteredLocations : locations;
 
     return (
-      <Map
-        google={this.props.google}
-        zoom={mapOptions.zoom}
-        style={mapStyles}
-        initialCenter={mapOptions.center}
-      >
-        {locations.map((location) => (
-          <Marker
-            key={location.name}
-            name={location.name}
-            position={{ lat: location.lat, lng: location.lng }}
-            icon={{
-              url: location.type === 'Hospital'?
-               'https://maps.google.com/mapfiles/ms/icons/hospitals.png'
-               : 'https://maps.google.com/mapfiles/ms/icons/gas.png',
-              anchor: new google.maps.Point(16, 16),
-              scaledSize: new google.maps.Size(32, 32),
-            }}
+      <div style={containerStyles}>
+        <div style={searchStyles}>
+          <input
+            type="text"
+            placeholder="Search for a location"
+            value={this.state.query}
+            onChange={this.handleSearch}
+            style={{ width: '100%', padding: '10px', marginBottom: '10px' }}
           />
-        ))}
-        {/* {garages.map((location) => (
-          <Marker
-            key={location.name}
-            name={location.name}
-            position={{ lat: location.lat, lng: location.lng }}
-            icon={{
-              url: 'https://maps.google.com/mapfiles/ms/icons/blue.png',
-              anchor: new google.maps.Point(16, 16),
-              scaledSize: new google.maps.Size(32, 32),
-            }} */}
-          {/* /> */}
-        {/* ))} */}
-        <Marker
-          name={'My Location'}
-          position={{ lat, lng }}
-          icon={{
-            url: 'https://maps.google.com/mapfiles/ms/icons/blue.png',
-            anchor: new google.maps.Point(16, 16),
-            scaledSize: new google.maps.Size(32, 32),
-          }}
-        />
-      </Map>
-    );
+          <h2>Nearby Places</h2>
+          <div>
+            {locationToDisplay.map((location, index) => (
+              <div className="nameBar" key={`name-${index}`}>
+                <a href={`/order/${location.id}`}>{location.name} </a> 
+              </div>
+            ))}
+          </div>
+        </div>
+  
+        <div style={{ width: '50%', height: '100vh', margin: '10px' }}>
+          <Map
+            google={google}
+            zoom={14}
+            style={mapStyles}
+            initialCenter={mapOptions.center}
+            center={{ lat, lng }}
+          >
+              <Marker
+              position={{ lat, lng }}
+              icon={{
+                url: 'https://maps.google.com/mapfiles/ms/icons/blue.png',
+              }}
+            />
+            {filteredLocations.map((location, index) => (
+              <Marker
+                key={`location-${index}`}
+                position={{ lat: location.lat, lng: location.lng }}
+                title={location.name}
+                icon={
+                  location.type === 'hospital' ? 'https://maps.google.com/mapfiles/ms/icons/hospitals.png' :
+                  null
+                }/>))}
+          </Map>
+        </div>
+  
+        {/* <div style={nearbyPlacesStyles}> */}
+          
+        {/* </div> */}
+      </div>);
   }
-}
+}  
 
 export default GoogleApiWrapper({
   apiKey: 'AIzaSyC_9cAGZnlvSGLKRUMCxIgteTpaMvE83oY',

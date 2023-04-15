@@ -13,13 +13,13 @@ function Cards() {
               src='images/towing.webp'
               text='  Vehicle Towing            '
               label='Vechile Towing Service'
-              path='/sign-up'
+              path='/mapGarage'
             />
             <CardItem
               src='images/medical.png'
               text='On-Spot Medical Treatment Service            '
               label='Medical Treatment'
-              path='/medical'
+              path='/map'
             />
           </ul>
           <ul className='cards__items'>
@@ -27,19 +27,19 @@ function Cards() {
               src='images/petrol_dilevery.jpg'
               text='Fuel Delivery Service        '
               label='Fuel Dilevery'
-              path='/sign-up'
+              path='/mapPetrolPump'
             />
             <CardItem
               src='images/tire puncture.jpg'
               text='Tire Puncture Repair Service            '
               label='Tire puncture Repair'
-              path='/sign-up'
+              path='/mapGarage'
             />
             <CardItem
               src='images/battery.jpg'
               text='Battery Service                           '
               label='Battery'
-              path='/sign-up'
+              path='/mapGarage'
             />
           </ul>
         </div>
