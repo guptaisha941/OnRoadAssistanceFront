@@ -65,7 +65,7 @@ function AdminLogin() {
   
       if (matchedCustomer) {
         alert('Login successful!');
-        window.location.href = "/order";
+        window.location.href = "/homeadmin"+"?id=" + matchedCustomer._id;
         // history.push("/map");
         // Code to redirect to dashboard page or perform any other action after successful login
       } else {

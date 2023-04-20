@@ -21,17 +21,61 @@
     margin-bottom: 10px;
   }
 
-  .location-name {
-    font-weight: bold;
-    color: #0077cc;
-    text-decoration: none;
+  .location-box {
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    /* align-items: center; */
+    padding: 10px;
+    margin-bottom: 10px;
   }
-
-  .location-name:hover {
+  
+  .location-box:hover .location-name {
+    color: blue;
     text-decoration: underline;
   }
-
+  
+  .location-name {
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+    display: inline-block; /* Add this property to create a block-level element */
+    margin-right: 10px; /* Add a margin to create space between rating and name */
+  }
+  
+  .location-rating {
+    display: inline-block; /* Add this property to create a block-level element */
+  }
+  
   .location-distance {
+    display: inline-block; /* Add this property to create a block-level element */
     margin-left: 10px;
     color: #999999;
   }
+  
+  .location-distance::before {
+    content: " ";
+  }
+  
+
+
+  .requestStyles {
+    background: '#2196f3';
+    color: 'white';
+    border: 'none';
+    padding: '10px 20px';
+    /* borderRadius: '5px'; */
+    cursor: 'pointer';
+  }
+
+  .modal__close-button {
+    background-color: white;
+    border: none;
+    color: black;
+    font-size: 20px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+  }
+  

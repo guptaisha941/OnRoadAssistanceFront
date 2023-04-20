@@ -4,6 +4,8 @@ import Input from '../component/Input';
 import Button from '../component/Button';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+// import bcrypt from 'bcryptjs';
+
 
 export default function SignUp() {
    // const [name, setName] = useState('');
@@ -34,6 +36,7 @@ export default function SignUp() {
     formData.append('email', email);
     formData.append('password', password);
     formData.append('phone', phone);
+
     // formData.append('document', document);
 
       
@@ -41,6 +44,9 @@ export default function SignUp() {
       alert('Please fill all the credentials');
       return;
     }
+
+    // const hashedpassword = await bcrypt.hash(password,10);
+    // formData.append('password' , hashedpassword)
 
 
     try {

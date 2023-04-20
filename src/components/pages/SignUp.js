@@ -1,32 +1,26 @@
-
-
-
 import styled from "styled-components";
 import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 import Input from "../component/Input";
-import Button from "../component/Button";
 import Icon from "../component/Icon";
-// import { Navigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import '../Signup.css';
-// import { useHistory } from "react-router-dom";
-
-
 import React  from 'react';
 import { useState, useEffect  } from 'react';
-// import React, { Component } from 'react';
 import axios from 'axios';
-// import { Input } from 'antd';
+// import Cards from "../Cards";
+import {cards} from "../Cards";
+import bcrypt from 'bcryptjs';
+
 
 
 function SignUp() {
-
-  // const history = useHistory();
-
-  
-  // const [name, setName] = useState('');
   const [click, setClick] = useState(false);
   const [button, setButton] = useState(true);
+  // console.log("props",props)
+  // const { path } = props;
+  // const selectedCardPath = props.selectedCard;
+  const [selectedCard, setSelectedCard] = useState('');
+
   const closeMobileMenu = () => setClick(false);
   const showButton = () => {
     if (window.innerWidth <= 960) {
@@ -46,9 +40,19 @@ function SignUp() {
     setPassword(event.target.value);
   };
 
+  const handleCardChange = (event) => {
+    setSelectedCard(event.target.value);
+  };
+
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
   };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('isLoggedIn');
+    sessionStorage.removeItem('userId');
+    window.location.href = "/";
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -62,15 +66,16 @@ function SignUp() {
       const response = await axios.get('http://localhost:5000/customers');
       const customers = response.data;
   
-      const matchedCustomer = customers.find((customer) => {
+      const matchedCustomer = customers.find((customer) =>
+       {
+        // const hashedpassword = bcrypt.hash(password,10);
         return customer.email === email && customer.password === password;
       });
   
       if (matchedCustomer) {
-        alert('Admin Login successful!');
-        window.location.href = "/";
-        // history.push("/map");
-        // Code to redirect to dashboard page or perform any other action after successful login
+        alert('User Login successful!');
+        window.location.href = "/homelogout"+"?id=" + matchedCustomer._id;
+      
       } else {
         alert('Invalid credentials. Please try again.');
       }
@@ -81,11 +86,6 @@ function SignUp() {
   };
   
 
-  // function handleLogin() {
-  //   // <Redirect to = "/login"/>
-  //   Navigate("/login");
-  // }
-  
   window.addEventListener('resize', showButton);
   const FacebookBackground =
     "linear-gradient(to right, #0546A0 0%, #0546A0 40%, #663FB6 100%)";
@@ -110,12 +110,13 @@ function SignUp() {
                 Login
               </Link>
         </ul>
+
+
+
         <div style={{ height: "1em" }} />
       </div>
+      
       <Sent>Don't have an account? Signup as</Sent>
-      {/* <div class="text-center small" >Don't have an account? Signup as</div> */}
-
-      {/* <div class="text-center small">Don't have an account? Signup as</div> */}
 
       <ul>
               <Link

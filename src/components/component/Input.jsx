@@ -14,7 +14,7 @@ const StyledInput = styled.input`
   padding: 1rem;
   border: none;
   outline: none;
-  color: white;
+  color: brown;
   font-size: 1rem;
   font-weight: bold;
   &:focus {
@@ -29,3 +29,5 @@ const StyledInput = styled.input`
     font-size: 1rem;
   }
 `;
+
+
