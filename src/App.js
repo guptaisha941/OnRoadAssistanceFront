@@ -27,6 +27,7 @@ import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import Request from './components/pages/Request';
 import AdminReq from './components/pages/AdminReq';
+import Rating from './components/pages/Rating';
 
 
 function App() {
@@ -81,6 +82,7 @@ function App() {
           <Route path='/serviceslogin' component={Serviceslogin} />
           <Route path='/Request' component={Request} />
           <Route path='/AdminReq' component={AdminReq} />
+          <Route path='/Rating' component={Rating} />
 
         
         </Switch>

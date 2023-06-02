@@ -61,5 +61,59 @@
     max-width: 500px;
     text-align: center;
   }
+
+  .order-confirmation-container {
+    margin: center;
+    width: 80%;
+    height: 80%;
+    text-align: center;
+    border: 2px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: whitesmoke;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  }
+  
+  
+  .order-details {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    margin: 20px 0;
+  }
+  
+  .order-item {
+    margin: 10px;
+    font-size: 20px;
+    color: rgba(65, 30, 30, 0.473);;
+  }
+  
+  .order-item span:first-child {
+    font-weight: bold;
+  }
+  
+  .confirmation-message {
+    margin: 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .confirmation-message svg {
+    margin-right: 10px;
+  }
+  
+  .green {
+    color: green;
+  }
+  
+  .red {
+    color: red;
+  }
+  
+  .brown {
+    color: black;
+    font-weight: bold;
+  }
+  
   
   

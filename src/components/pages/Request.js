@@ -4,6 +4,7 @@ import { useEffect , useState} from "react";
 import './order.css';
 import axios from 'axios';
 import { FaClock, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import Rating from './Rating';
 
 
 export default function Request(props) {
@@ -14,9 +15,13 @@ export default function Request(props) {
   const [ad, setAd] = useState("");
   const [lc, setlc] = useState("");
   const [status, setStatus] = useState("");
+  const [cm, setConfirmationMsg] = useState("");
+  const [icon, setIcon] = useState("");
   const [garageRequests, setGarageRequests] = useState([]);
 
+
     const [vehicleType, setVehicleType] = useState("");
+    const [showFeedback, setShowFeedback] = useState(false);
 
 
   useEffect(() => {
@@ -41,12 +46,18 @@ export default function Request(props) {
       if (data.success) {
         const lastStatus = response.data.garageRequests[response.data.garageRequests.length - 1].status;
         setStatus(lastStatus);
+        if (lastStatus === 'pending') {
+          setConfirmationMsg('Waiting for confirmation...');
+          setIcon(<FaClock />);
+        } else if (lastStatus === 'ACCEPTED') {
+          setConfirmationMsg('Congrats!! Your Request has been Accepted. Our Team will soon reach at your Location');
+          setIcon(<FaCheckCircle />);
+          setShowFeedback(true); 
+        } else if (lastStatus === 'DECLINED') {
+          setConfirmationMsg('Sorry!! Your Request has been Declined.');
+          setIcon(<FaTimesCircle />);
+        }
 
-        // setGarageRequests(data.garageRequests);
-        // setStatus(garageRequests.status)
-        
-        // const garageRequests = data.garageRequests.filter((request) => request.status === 'pending');
-        // setGarageRequests(data.garageRequests);
       }
     } catch (error) {
         console.log("whattfbjhd");
@@ -57,75 +68,49 @@ export default function Request(props) {
   const g = garageRequests.map((request) => request.status)
 
 
-  function OrderConfirmation({ status, ad }) {
-    let confirmationMessage;
-    let icon;
-  
-    if (status === 'PENDING') {
-      confirmationMessage = 'Waiting for confirmation...';
-      icon = <FaClock />;
-    } else if (status === 'ACCEPTED') {
-      confirmationMessage = 'Confirmed!';
-      icon = <FaCheckCircle />;
-    } else if (status === 'DECLINED') {
-      confirmationMessage = 'Declined.';
-      icon = <FaTimesCircle />;
-    }
-  }
-
   return (
     <div className="order-confirmation-container">
-      <h2>Order Details</h2>
-      <div className="order-details">
-        <div className="order-item">
-          <span>Service Type: </span>
-          <span style={{ color: "brown" }}>{label}</span>
-        </div>
-        <div className="order-item">
-          <span>Location:</span>
-          {/* <span>{this.props.match.params.order_id}</span> */}
-          <span style={{ color: "brown" }}>{lc}</span>
-        </div>
-        <div className="order-item">
-          <span>Vehicle Type:</span>
-          {/* <span>{this.props.match.params.order_id}</span> */}
-          <span style={{ color: "brown" }}>{vehicleType}</span>
-        </div>
-        {/* <div className="order-item">
-          <span>Vehicle Type:</span>
-          <select value={vehicleType} onChange={handleVehicleTypeChange} style={{ color: "brown", backgroundColor: "#f2f2f2", padding: "5px" }}>
-            <option value="Two Wheeler">Two Wheeler</option>
-            <option value="Three Wheeler">Three Wheeler</option>
-            <option value="Four Wheeler">Four Wheeler</option>
-          </select>
-        </div> */}
-        <div className="order-item">
-          <span>Vehicle Make:</span>
-          <span style={{ color: "brown" }}>{vm}</span>
-        </div>
-        <div className="order-item">
-          <span>Vehicle Number:</span>
-          <span style={{ color: "brown" }}>{vn}</span>
-        </div>
-        <div className="order-item">
-          <span>Status</span>
-          {status === "DECLINED" ? (
-            <span style={{ color: "red" }}>{status}</span>
-          ) : status === "ACCEPTED" ? (
-            <span style={{ color: "green" }}>{status}</span>
-          ) : (
-            <span>{status}</span>
-          )}
-        </div>
-        <div className="order-item">
-          <span>Additional Details:</span>
-          <span style={{ color: "brown" }}>{ad}</span>
-        </div>
-      </div>
-      
-      <p className="confirmation-message">
-        Thank you for your order! Our team will be in touch with you shortly.
-      </p>
+  <h2 >ORDER DETAILS</h2>
+  <div >
+    <div className="order-item">
+      <span>Service Type: </span>
+      <span className="brown">{label}</span>
     </div>
+    <div className="order-item">
+      <span>Location:</span>
+      <span className="brown">{lc}</span>
+    </div>
+    <div className="order-item">
+      <span>Vehicle Type:</span>
+      <span className="brown">{vehicleType}</span>
+    </div>
+    <div className="order-item">
+      <span>Vehicle Make:</span>
+      <span className="brown">{vm}</span>
+    </div>
+    <div className="order-item">
+      <span>Vehicle Number:</span>
+      <span className="brown">{vn}</span>
+    </div>
+    <div className="order-item">
+      <span>Status:</span>
+      {status === "DECLINED" ? (
+        <span className="red">{status}</span>
+      ) : status === "ACCEPTED" ? (
+        <span className="green">{status}</span>
+      ) : (
+        <span>{status}</span>
+      )}
+    </div>
+    <div className="order-item">
+      <span>Additional Details:</span>
+      <span className="brown">{ad}</span>
+    </div>
+  </div>
+
+  <p className="confirmation-message">
+    {icon} {cm}
+  </p>
+</div>
   );
-}
+          }  

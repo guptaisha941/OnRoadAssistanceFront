@@ -437,8 +437,6 @@ class MapWithLocation extends Component {
         </div>
       </div>);
   }
-
-  
 }
 
 
@@ -471,9 +469,6 @@ const modal__close=  styled.div`
   cursor: pointer;
   `;
 
-
-
-  
 
 export default GoogleApiWrapper({
   apiKey: 'AIzaSyC_9cAGZnlvSGLKRUMCxIgteTpaMvE83oY',
